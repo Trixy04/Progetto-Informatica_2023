@@ -21,6 +21,40 @@ function addEvent()
     $sql = "INSERT INTO agenda (dataIns, dataScad, textMess, autore, titolo)
     VALUES ('$dataCreazione', '$dataScadenza', '$descrizione', '$autore', '$titolo')";
     if (mysqli_query($conn, $sql)) {
+        // Refer to the PHP quickstart on how to setup the environment:
+
+        $event = new Google_Service_Calendar_Event(array(
+            'summary' => 'Google I/O 2015',
+            'location' => '800 Howard St., San Francisco, CA 94103',
+            'description' => 'A chance to hear more about Google\'s developer products.',
+            'start' => array(
+                'dateTime' => '2015-05-28T09:00:00-07:00',
+                'timeZone' => 'America/Los_Angeles',
+            ),
+            'end' => array(
+                'dateTime' => '2015-05-28T17:00:00-07:00',
+                'timeZone' => 'America/Los_Angeles',
+            ),
+            'recurrence' => array(
+                'RRULE:FREQ=DAILY;COUNT=2'
+            ),
+            'attendees' => array(
+                array('email' => 'lpage@example.com'),
+                array('email' => 'sbrin@example.com'),
+            ),
+            'reminders' => array(
+                'useDefault' => FALSE,
+                'overrides' => array(
+                    array('method' => 'email', 'minutes' => 24 * 60),
+                    array('method' => 'popup', 'minutes' => 10),
+                ),
+            ),
+        ));
+
+        $calendarId = 'primary';
+        $event = $service->events->insert($calendarId, $event);
+        printf('Event created: %s\n', $event->htmlLink);
+
         header("Location: home.php?add=false");
     } else {
         echo "Error: " . $sql . "<br>" . mysqli_error($conn);
@@ -57,7 +91,18 @@ function search($cf)
             </tr>";
 
             header("Location: ../PAGES/home.php?openModal=true");
-
         }
     }
+}
+
+function recuperaDatiSocieta()
+{
+    include("config.php");
+    $sqlSocieta = "SELECT * FROM dati_Societa";
+    $result = $conn->query($sqlSocieta);
+    while ($row = $result->fetch_assoc()) {
+        $nome =  $row["nome_legale"];
+    }
+
+    return $nome;
 }

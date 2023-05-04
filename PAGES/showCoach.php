@@ -43,34 +43,21 @@ P.provinciaNascita AS pNascita, P.luogo_nascita AS luogo, P.cod_utente AS codUte
 SS.sesso AS sesso, 
 T.titolo AS titolo, 
 R.citta AS citta, R.cap AS cap, R.indirizzo AS indirizzo, R.civico AS civico, R.provincia AS rProvincia, R.id_TipoVia AS tipoVia,
-S.nome AS squadra, S.id AS idSquadra,
-GR.num_maglia AS maglia, GR.url_img AS img, 
 D.numero_documento AS nDoc,
 C.cellulare AS cellulare, C.prefissoCell AS prefisso, C.email AS email,
-TCT.tipologia AS tipoCertificato,
-CT.numeroCertificato AS nCertificato, CT.dataScadenza AS scadCert, CT.dataEsame AS dataEsame, CT.dottore AS dottore, CT.struttura AS struttura,
+cart.numeroCartellino AS numeroCartellino, cart.dataScadenza AS dataScadCart, cart.dataRilascio AS dataRilascio, cart.comitatoRilascio AS comitato, cart.id_qualifica AS idQual,
+qF.qualificaFipav AS qualificaFipav
 
-DF.cod_fiscale AS codFiscaleFatt, DF.nome AS nomeFatt, DF.cognome AS cognomeFatt, DF.titolo AS titoloFatt,
-ConFatt.email AS emailFatt, ConFatt.cellulare AS cellulareFatt, ConFatt.prefissoCell AS prefissoCellFatt,
-ResiFatt.cap AS capFatt, ResiFatt.citta AS cittaFatt, ResiFatt.civico AS civicoFatt, ResiFatt.id_tipoVia AS tipoViaFatt, ResiFatt.indirizzo AS indirizzoFatt, ResiFatt.provincia AS provinciaFatt
+FROM allenatore AS A
 
-FROM gioca AS G
-
-JOIN giocatore AS GR ON G.id_giocatore = GR.id
-JOIN persona AS P ON GR.id_persona = P.cod_utente
+JOIN persona AS P ON A.id_persona = P.cod_utente
 JOIN contatto AS C ON C.id = P.id_contatti
-JOIN squadra AS S ON G.id_squadra = S.id
 JOIN residenza AS R on P.id_residenza = R.id
 JOIN titolo AS T ON P.id_titolo = T.id
 JOIN sesso AS SS ON P.id_sesso = SS.id
 JOIN documento AS D ON D.id = P.id_documento
-JOIN certificato AS CT ON GR.id_certificato = CT.id
-JOIN tipologieCertificato AS TCT ON CT.id_tipo = TCT.id
-
-JOIN fattDatiPersona AS FDP ON FDP.id_personaRiferita = P.cod_utente
-JOIN dati_fatturazione AS DF ON FDP.id_datiFatt = DF.id
-JOIN contatto AS ConFatt ON ConFatt.id = DF.id_contatti
-JOIN residenza AS ResiFatt ON ResiFatt.id = DF.id_residenza
+JOIN cartellino AS cart ON A.id_cartellino = cart.id
+JOIN qualificaFipav AS qF ON qF.id = cart.id_qualifica
 
 WHERE P.cod_fiscale = '$codiceFiscale'";
 
@@ -92,35 +79,21 @@ while ($row = $result->fetch_assoc()) {
     $numTelefono = "+" . $row["prefisso"] . " " . $row["cellulare"];
     $email = $row["email"];
     $img = '01.png';
-    $tipCert = $row["tipoCertificato"];
-    $numCertificato = $row["nCertificato"];
-    $dataScCert = $row["scadCert"];
-    $dataEsame = $row["dataEsame"];
+   
     $dataCreazione = $row["dataCreazionePersona"];
-    $dottore = $row["dottore"];
-    $struttura = $row["struttura"];
-    $nomeSquadra = $row["squadra"];
-    $numeroMaglia = $row["maglia"];
+    $idQualifica = $row["idQual"];
+    $numeroCartellino = $row["numeroCartellino"];
+    $dataScadenzaCart = $row["dataScadCart"];
+    $dataRilascioCart = $row["dataRilascio"];
+    $comitatoRilascio = $row["comitato"];
+   
+   
     $tipoVia = $row["tipoVia"];
     if ($row["sesso"] == "Maschio") {
         $checkMaschio = "checked";
     } else {
         $checkFemmina = "checked";
     }
-
-    $codFiscaleFatt = $row["codFiscaleFatt"];
-    $nomeFatt = $row["nomeFatt"];
-    $cognomeFatt = $row["cognomeFatt"];
-    $titoloFatt = $row["titoloFatt"];
-    $emailFatt = $row["emailFatt"];
-    $cellulareFatt = $row["cellulareFatt"];
-    $prefissoCellFatt = $row["prefissoCellFatt"];
-    $capFatt = $row["capFatt"];
-    $cittaFatt = $row["cittaFatt"];
-    $civicoFatt = $row["civicoFatt"];
-    $tipoViaFatt = $row["tipoViaFatt"];
-    $indirizzoFatt = $row["indirizzoFatt"];
-    $provinciaFatt = $row["provinciaFatt"];
 }
 
 ?>
@@ -198,13 +171,7 @@ while ($row = $result->fetch_assoc()) {
                 <a class="nav-link active" aria-current="page" href="#">Anagrafica</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#certificato">Certificato</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#squadra">Squadra</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#fatt">Fatturazione</a>
+                <a class="nav-link" href="#certificato">Cartellino</a>
             </li>
         </ul>
 
@@ -377,24 +344,24 @@ while ($row = $result->fetch_assoc()) {
                 </center>
             </div>
             <a name="certificato">
-                <p class="mb-0 text-re" style="opacity: 0.7;">Dati cerficato:</p>
+                <p class="mb-0 text-re" style="opacity: 0.7;">Dati cartellino:</p>
             </a>
 
-            <div class="div-border">
+            <div class="div-border mb-5">
                 <div class="div-left-certificato mb-2">
                     <div class="row mb-3">
-                        <label for="inputEmail3" class="col-sm-2 col-form-label">Tipologia:</label>
+                        <label for="inputEmail3" class="col-sm-2 col-form-label">Qualifica:</label>
                         <div class="col-sm-10">
                             <select class="form-select w-35 ml-5" aria-label="Default select example" <?php echo $status ?>>
                                 <?php
-                                $sqlCategorieCert = "SELECT * FROM tipologieCertificato";
+                                $sqlCategorieCert = "SELECT * FROM qualificaFipav";
                                 $result = $conn->query($sqlCategorieCert);
                                 while ($row = $result->fetch_assoc()) {
                                     $idTipoCert = $row["id"];
-                                    if ($tipCert == $row["tipologia"]) {
-                                        echo "<option value=$idTipoCert selected> " . $row["tipologia"] . "</option>";
+                                    if ($idQualifica == $row["id"]) {
+                                        echo "<option value=$idTipoCert selected> " . $row["qualificaFipav"] . "</option>";
                                     }
-                                    echo "<option value=$idTipoCert> " . $row["tipologia"] . "</option>";
+                                    echo "<option value=$idTipoCert> " . $row["qualificaFipav"] . "</option>";
                                 }
                                 ?>
                             </select>
@@ -403,131 +370,13 @@ while ($row = $result->fetch_assoc()) {
                     <div class="row mb-3">
                         <label for="inputEmail3" class="col-sm-2 col-form-label">Numero:</label>
                         <div class="col-sm-10">
-                            <input type="email" class="form-control w-35 ml-5" id="inputEmail3" placeholder="<?php echo $numCertificato ?>" <?php echo $status ?>>
+                            <input type="email" class="form-control w-35 ml-5" id="inputEmail3" placeholder="<?php echo $numeroCartellino ?>" <?php echo $status ?>>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="inputEmail3" class="col-sm-2 col-form-label">Scadenza:</label>
                         <div class="col-sm-10">
-                            <input type="email" class="form-control w-35 ml-5" id="inputEmail3" placeholder="<?php echo $dataScCert ?>" <?php echo $status ?>>
-                        </div>
-                    </div>
-                    <div class="row" style="display: <?php echo $statusShow ?>">
-                        <input type="file" name="upload1" id="upload1" class="upload" <?php echo $status ?> />
-                    </div>
-                </div>
-
-
-                <div class="div-right-note">
-                    <div class="row mb-3">
-                        <label for="inputEmail3" class="col-sm-2 col-form-label">Visita:</label>
-                        <div class="col-sm-10">
-                            <input type="email" class="form-control w-35 ml-5" id="inputEmail3" placeholder="<?php echo $dataEsame ?>" <?php echo $status ?>>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <label for="inputEmail3" class="col-sm-2 col-form-label">Dottore:</label>
-                        <div class="col-sm-10">
-                            <input type="email" class="form-control w-35 ml-5" id="inputEmail3" placeholder="<?php echo strtoupper($dottore) ?>" <?php echo $status ?>>
-                        </div>
-                    </div>
-                    <div class="row mb-perso">
-                        <label for="inputEmail3" class="col-sm-2 col-form-label">Struttura:</label>
-                        <div class="col-sm-10">
-                            <input type="email" class="form-control w-35 ml-5" id="inputEmail3" placeholder="<?php echo strtoupper($struttura) ?>" <?php echo $status ?>>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <a name="squadra">
-                <p class="mb-0 text-re" style="opacity: 0.7;">Dati squadra:</p>
-            </a>
-
-            <div class="div-border mb-2">
-                <div class="div-left-certificato">
-                    <div class="row mb-3">
-                        <label for="inputEmail3" class="col-sm-2 col-form-label">Squadra:</label>
-                        <div class="col-sm-10">
-                            <select class="form-select w-35 ml-5" aria-label="Default select example" <?php echo $status ?>>
-                                <?php
-                                $sqlSquadra = "SELECT * FROM squadra";
-                                $result = $conn->query($sqlSquadra);
-                                while ($row = $result->fetch_assoc()) {
-                                    $idSquadra = $row["id"];
-                                    if ($nomeSquadra == $row["nome"]) {
-                                        echo "<option value=$idSquadra selected> " . $row["nome"] . "</option>";
-                                    }
-                                    echo "<option value=$idSquadra> " . $row["nome"] . "</option>";
-                                }
-                                ?>
-                            </select>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="div-right-note">
-                    <div class="row mb-3">
-                        <label for="inputEmail3" class="col-sm-2 col-form-label">Maglia</label>
-                        <div class="col-sm-10">
-                            <input type="email" class="form-control w-15 ml-5" id="inputEmail3" placeholder="<?php echo $numeroMaglia ?>" <?php echo $status ?>>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <a name="fatt">
-                <p class="mb-0 text-re" style="opacity: 0.7;">Dati fatturazione:</p>
-            </a>
-
-            <div class="div-border mb-5">
-                <div class="div-left-certificato mb-2">
-                    <div class="row mb-3">
-                        <label for="inputEmail3" class="col-sm-2 col-form-label">C.F:</label>
-                        <div class="col-sm-10">
-                            <input type="email" class="form-control w-35 ml-5" id="inputEmail3" placeholder="<?php echo $codFiscaleFatt ?>" <?php echo $status ?>>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <label for="inputEmail3" class="col-sm-2 col-form-label">Cognome:</label>
-                        <div class="col-sm-10">
-                            <input type="email" class="form-control w-35 ml-5" id="inputEmail3" placeholder="<?php echo strtoupper($cognomeFatt) ?>" <?php echo $status ?>>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <label for="inputEmail3" class="col-sm-2 col-form-label">Email:</label>
-                        <div class="col-sm-10">
-                            <input type="email" class="form-control w-35 ml-5" id="inputEmail3" placeholder="<?php echo $emailFatt ?>" <?php echo $status ?>>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <label for="inputEmail3" class="col-sm-2 col-form-label">Tipo:</label>
-                        <div class="col-sm-10">
-                            <select class="form-select w-25 ml-5" aria-label="Default select example" <?php echo $status ?>>
-                                <?php
-                                $sqlTipoVia = "SELECT * FROM tipoVia";
-                                $result = $conn->query($sqlTipoVia);
-                                while ($row = $result->fetch_assoc()) {
-                                    $idtipoFatt = $row["id"];
-                                    if ($tipoViaFatt == $row["id"]) {
-                                        echo "<option value=$idtipoFatt selected> " . $row["tipologia"] . "</option>";
-                                    }
-                                    echo "<option value=$idtipoFatt> " . $row["tipologia"] . "</option>";
-                                }
-                                ?>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <label for="inputEmail3" class="col-sm-2 col-form-label">Civico:</label>
-                        <div class="col-sm-10">
-                            <input type="email" class="form-control w-35 ml-5" id="inputEmail3" placeholder="<?php echo $civicoFatt ?>" <?php echo $status ?>>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <label for="inputEmail3" class="col-sm-2 col-form-label">CAP:</label>
-                        <div class="col-sm-10">
-                            <input type="email" class="form-control w-35 ml-5" id="inputEmail3" placeholder="<?php echo $capFatt ?>" <?php echo $status ?>>
+                            <input type="email" class="form-control w-35 ml-5" id="inputEmail3" placeholder="<?php echo $dataScadenzaCart ?>" <?php echo $status ?>>
                         </div>
                     </div>
                 </div>
@@ -535,56 +384,19 @@ while ($row = $result->fetch_assoc()) {
 
                 <div class="div-right-note">
                     <div class="row mb-3">
-                        <label for="inputEmail3" class="col-sm-2 col-form-label">Titolo:</label>
+                        <label for="inputEmail3" class="col-sm-2 col-form-label">Rilascio:</label>
                         <div class="col-sm-10">
-                            <select class="form-select w-25 ml-5" aria-label="Default select example" <?php echo $status ?>>
-                                <?php
-                                $sqlCategorie = "SELECT * FROM titolo";
-                                $result = $conn->query($sqlCategorie);
-                                while ($row = $result->fetch_assoc()) {
-                                    $idTitoloFatt = $row["id"];
-                                    if ($titoloFatt == $row["titolo"]) {
-                                        echo "<option value=$idTitoloFatt selected> " . $row["titolo"] . "</option>";
-                                    }
-                                    echo "<option value=$idTitoloFatt> " . $row["titolo"] . "</option>";
-                                }
-                                ?>
-                            </select>
+                            <input type="email" class="form-control w-35 ml-5" id="inputEmail3" placeholder="<?php echo $dataRilascioCart ?>" <?php echo $status ?>>
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <label for="inputEmail3" class="col-sm-2 col-form-label">Nome:</label>
+                        <label for="inputEmail3" class="col-sm-2 col-form-label">Comitato:</label>
                         <div class="col-sm-10">
-                            <input type="email" class="form-control w-35 ml-5" id="inputEmail3" placeholder="<?php echo strtoupper($nomeFatt) ?>" <?php echo $status ?>>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <label for="inputEmail3" class="col-sm-2 col-form-label">Cellulare:</label>
-                        <div class="col-sm-10">
-                            <input type="email" class="form-control w-35 ml-5" id="inputEmail3" placeholder="<?php echo $cellulareFatt ?>" <?php echo $status ?>>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <label for="inputEmail3" class="col-sm-2 col-form-label">Indirizzo:</label>
-                        <div class="col-sm-10">
-                            <input type="email" class="form-control w-35 ml-5" id="inputEmail3" placeholder="<?php echo strtoupper($indirizzoFatt) ?>" <?php echo $status ?>>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <label for="inputEmail3" class="col-sm-2 col-form-label">Città:</label>
-                        <div class="col-sm-10">
-                            <input type="email" class="form-control w-35 ml-5" id="inputEmail3" placeholder="<?php echo strtoupper($cittaFatt) ?>" <?php echo $status ?>>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <label for="inputEmail3" class="col-sm-2 col-form-label">Provincia:</label>
-                        <div class="col-sm-10">
-                            <input type="email" class="form-control w-15 ml-5" id="inputEmail3" placeholder="<?php echo $provinciaFatt ?>" <?php echo $status ?>>
+                            <input type="email" class="form-control w-35 ml-5" id="inputEmail3" placeholder="<?php echo strtoupper($comitatoRilascio) ?>" <?php echo $status ?>>
                         </div>
                     </div>
                 </div>
             </div>
-
         </form>
         <div class="w-100 text-center" style="margin-top: 20%; display: <?php echo $writeDanger ?>;">
             <h1>Utente non trovato</h1>

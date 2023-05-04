@@ -91,8 +91,6 @@ while ($row = $result->fetch_assoc()) {
     }
 }
 
-$conn = null;
-
 
 function deleteSession()
 {
@@ -117,7 +115,6 @@ function addEvent()
     } else {
         echo "Error: " . $sql . "<br>" . mysqli_error($conn);
     }
-    $conn = null;
 }
 
 
@@ -139,14 +136,29 @@ function addEvent()
 
 <body>
 
-    <div class="sidebar">
-        <center><img src="../ICON/LOGO.png" alt="Bootstrap" width="60" height="70" class="mt-3"></center>
+<div class="sidebar">
+        <center><img src="../ICON/LOGO.png" alt="Bootstrap" width="80" height="80" class="mt-3"></center>
 
         <a href="home.php" class="">Home</a>
-        <a href="#" class="">Società</a>
+        <a href="player.php" class="">Atleti</a>
+        <a href="coach.php" class="">Allenatori</a>
+        <a href="dirigenti.php" class="">Dirigenti</a>
         <a href="Pages/agenda.php" class="">Agenda</a>
         <a href="#">Organigramma</a>
-        <a href="#">Squadre</a>
+        <button class="dropdown-btn">Squadre
+            <i class="fa fa-caret-down"></i>
+        </button>
+        <div class="dropdown-container">
+            <?php
+            $sqlTeam = "SELECT nome FROM `squadra`";
+            $result = $conn->query($sqlTeam);
+            while ($row = $result->fetch_assoc()) {
+                $team = $row["nome"];
+                echo "<a href='generateTeam.php?squadra=$team'>$team</a>";
+            }
+            $conn = null;
+            ?>
+        </div>
         <a href="#">Contabilità</a>
     </div>
 
@@ -176,10 +188,12 @@ function addEvent()
                 </div>
             </div>
         </nav>
+        <button type="button" class="btn btn-primary ml-1" style="background-color: #012E63; border: 0px;">Inserisci</button>
 
         <div class="div-utentiGenerate radius-bord border">
             <i>
-                <h5 class="mt-3 ml-5">Giocatori <?php echo $squadra?></h5>
+                <h5 class="mt-3 ml-5 w-50 float-left">Giocatori <?php echo $squadra?></h5>
+                
             </i>
             <center>
                 <table class="table table-striped mt-3 w-85">

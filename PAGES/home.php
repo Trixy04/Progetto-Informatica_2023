@@ -4,6 +4,11 @@ include("../CONFIG/config.php");
 include("../CONFIG/function.php");
 $dataOdierna = date("Y-m-d");
 
+$dataUnMese= new DateTime($dataOdierna);
+$interval = new DateInterval("P1M");
+$dataUnMese->add($interval);
+$dataPiu = $dataUnMese->format("Y-m-d") ;
+
 if (!isset($_SESSION["nominativo"])) {
     header("Location: ../index.php");
 }
@@ -14,41 +19,6 @@ if (isset($_GET["name"])) {
 
 if (isset($_GET["add"]) && $_GET["add"] == 'true') {
     addEvent();
-}
-
-if (isset($_GET["research"]) && $_GET["research"] == 'true') {
-    echo "<script language='javascript'> $(document).ready(function() { $('#exampleModal').modal('show'); }); </script>";
-
-    $sqlRicerca = "SELECT P.data_nascita AS dataNascita, P.cod_utente AS id, P.cod_fiscale AS codFiscale, P.nome AS nome, P.cognome AS cognome, S.nome AS squadra, GR.num_maglia AS maglia FROM gioca AS G
-    JOIN giocatore AS GR ON G.id_giocatore = GR.id
-    JOIN persona AS P ON GR.id_persona = P.cod_utente
-    JOIN contatto AS C ON C.id = P.id_contatti
-    JOIN squadra AS S ON G.id_squadra = S.id
-    WHERE codFiscale = '$cf'";
-
-
-    $result = $conn->query($sqlRicerca);
-    $tabella_risultato = "";
-    if ($result > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $dataN = $row["dataNascita"];
-            $timestamp_dataN = strtotime($dataN);
-            $formato = 'd/m/Y';
-            $resultDateN = date($formato, $timestamp_dataN);
-
-            $tabella_risultato .= "<tr>
-            <td>" . $row["id"] . "</td>
-            <td> " . $row["codFiscale"] . "</td>
-            <td> " . $row["cognome"] . "</td>
-            <td> " . $row["nome"] . "</td>
-            <td> " . $resultDateN . "</td>
-            <td> " . $row["maglia"] . "</td>
-            <td> " . $row["squadra"] . "</td>
-            </tr>";
-
-            header("Location: ../PAGES/home.php?openModal=true");
-        }
-    }
 }
 
 $sqlAtleti = "SELECT COUNT(*) AS tot FROM `giocatore`";
@@ -109,7 +79,6 @@ while ($row = $result->fetch_assoc()) {
     </tr>";
 }
 
-
 $sqlAgenda = "SELECT dataScad, titolo, autore FROM `agenda` WHERE dataScad >= '$dataOdierna' ORDER BY dataScad";
 
 $result = $conn->query($sqlAgenda);
@@ -142,6 +111,16 @@ while ($row = $result->fetch_assoc()) {
     }
 }
 
+
+$sqlCertificatiScadenza = "SELECT COUNT(C.id) AS tot FROM certificato AS C
+WHERE C.dataScadenza > '$dataOdierna' AND C.dataScadenza < '$dataPiu'";
+
+$result = $conn->query($sqlCertificatiScadenza);
+
+while ($row = $result->fetch_assoc()) {
+    $totCertificati = $row["tot"];
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -163,10 +142,12 @@ while ($row = $result->fetch_assoc()) {
     <div class="sidebar">
         <center><img src="../ICON/LOGO.png" alt="Bootstrap" width="80" height="80" class="mt-3"></center>
 
-        <a href="home.php" class="">Home</a>
-        <a href="#" class="">Società</a>
-        <a href="Pages/agenda.php" class="">Agenda</a>
-        <a href="#">Organigramma</a>
+        <a href="home.php" class="over">Home</a>
+        <a href="player.php" class="over">Atleti</a>
+        <a href="coach.php" class="over">Allenatori</a>
+        <a href="player.php" class="over">Dirigenti</a>
+        <a href="Pages/agenda.php" class="over">Agenda</a>
+        <a href="certificati.php" class="over">Certificati</a>
         <button class="dropdown-btn">Squadre
             <i class="fa fa-caret-down"></i>
         </button>
@@ -174,20 +155,20 @@ while ($row = $result->fetch_assoc()) {
             <?php
             $sqlTeam = "SELECT nome FROM `squadra`";
             $result = $conn->query($sqlTeam);
+            echo "<a class='over' href='team.php'>Gestisci squadre</a>";
             while ($row = $result->fetch_assoc()) {
                 $team = $row["nome"];
-                echo "<a href='generateTeam.php?squadra=$team'>$team</a>";
+                echo "<a class='over' href='generateTeam.php?squadra=$team'>$team</a>";
             }
             $conn = null;
             ?>
         </div>
-        <a href="#">Contabilità</a>
     </div>
 
     <div class="content">
         <nav class="navbar navbar-expand-lg">
             <div class="container-fluid">
-                <a class="navbar-brand font-15" href="#">SAVINO DEL BENE VOLLEY</a>
+                <a class="navbar-brand font-15" href="#"><?php echo strtoupper(recuperaDatiSocieta())?></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -220,7 +201,7 @@ while ($row = $result->fetch_assoc()) {
                                     <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
                                 </svg>TOT. Atleti</h5>
                             <p class="card-text fs-3"><?php echo $tot_atleti ?></p>
-                            <a href="#" class="btn btn-primary" style="background-color: #012E63; border: 0px solid white">Vai alla sezione atleti</a>
+                            <a href="player.php" class="btn btn-primary" style="background-color: #012E63; border: 0px solid white">Vai alla sezione atleti</a>
                         </div>
                     </div>
                 </div>
@@ -231,7 +212,7 @@ while ($row = $result->fetch_assoc()) {
                                     <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
                                 </svg>TOT. Allenatori</h5>
                             <p class="card-text fs-3"><?php echo $tot_allenatori ?></p>
-                            <a href="#" class="btn btn-primary" style="background-color: #012E63; border: 0px solid white">Vai alla sezione allenatori</a>
+                            <a href="coach.php" class="btn btn-primary" style="background-color: #012E63; border: 0px solid white">Vai alla sezione allenatori</a>
                         </div>
                     </div>
                 </div>
@@ -242,7 +223,7 @@ while ($row = $result->fetch_assoc()) {
                                     <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
                                 </svg>TOT. Dirigenti</h5>
                             <p class="card-text fs-3"><?php echo $tot_dirigenti ?></p>
-                            <a href="#" class="btn btn-primary" style="background-color: #012E63; border: 0px solid white">Vai alla sezione dirigenti</a>
+                            <a href="dirigenti.php" class="btn btn-primary" style="background-color: #012E63; border: 0px solid white">Vai alla sezione dirigenti</a>
                         </div>
                     </div>
                 </div>
@@ -252,8 +233,8 @@ while ($row = $result->fetch_assoc()) {
                             <h5 class="card-title"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-people-fill mr-2" viewBox="0 0 16 16">
                                     <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
                                 </svg>Certificati in scadenza</h5>
-                            <p class="card-text fs-3"><?php echo $tot_atleti ?></p>
-                            <a href="#" class="btn btn-primary" style="background-color: #012E63; border: 0px solid white">Visualizza certficati</a>
+                            <p class="card-text fs-3"><?php echo $totCertificati ?></p>
+                            <a href="certificati.php" class="btn btn-primary" style="background-color: #012E63; border: 0px solid white">Visualizza certficati</a>
                         </div>
                     </div>
                 </div>
@@ -290,7 +271,7 @@ while ($row = $result->fetch_assoc()) {
                 <h5 class="text-center mt-3">Calendario</h5>
             </i>
             <center>
-                <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=2&bgcolor=%23ffffff&ctz=Europe%2FRome&title=Savino%20Del%20Bene&src=dGVyaWFjYS5tYXR0aWFAZ21haWwuY29t&src=aXQuaXRhbGlhbiNob2xpZGF5QGdyb3VwLnYuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&color=%23039BE5&color=%230B8043" style="border-width:0" width="90%" height="400" frameborder="0" scrolling="no" class="mb-3"></iframe>
+                <iframe src="https://calendar.google.com/calendar/embed?src=2981ec8d5425953912857968cc3b55a3af24b6e30bc3545cb6c1760e8acaa2f6%40group.calendar.google.com&ctz=Europe%2FRome" style="border-width:0" width="90%" height="400" frameborder="0" scrolling="no" class="mb-3"></iframe>
             </center>
         </div>
 
@@ -299,8 +280,8 @@ while ($row = $result->fetch_assoc()) {
                 <h5 class="text-center mt-3">Ultimi giocatori inseriti</h5>
             </i>
             <center>
-                <form class="d-flex w-50" action="resultResearch.php" method="post">
-                    <input class="form-control me-2" type="search" placeholder="Cerca per codice fiscale" aria-label="Search" name="CFRicerca">
+                <form class="d-flex w-50" action="resultResearch.php" method="get">
+                    <input class="form-control me-2" type="search" placeholder="Cerca per codice fiscale" aria-label="Search" name="cf">
                     <button class="btn btn-outline-success" type="submit">Cerca</button>
                 </form>
                 <table class="table mt-3 w-85">
@@ -347,10 +328,9 @@ while ($row = $result->fetch_assoc()) {
                             <input type="date" id="dateStandard" name="datascadenza">
                         </div>
                     </div>
-
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <input type="submit" class="btn btn-success">
+                        <input type="submit" class="btn btn-success" style="background-color: #012E63;">
                     </div>
                 </form>
             </div>
