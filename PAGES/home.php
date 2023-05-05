@@ -2,12 +2,19 @@
 session_start();
 include("../CONFIG/config.php");
 include("../CONFIG/function.php");
+
+echo "<script type='text/javascript'>
+$(document).ready(function(){
+$('#exampleModal').modal('show');
+});
+</script>";
+
 $dataOdierna = date("Y-m-d");
 
-$dataUnMese= new DateTime($dataOdierna);
+$dataUnMese = new DateTime($dataOdierna);
 $interval = new DateInterval("P1M");
 $dataUnMese->add($interval);
-$dataPiu = $dataUnMese->format("Y-m-d") ;
+$dataPiu = $dataUnMese->format("Y-m-d");
 
 if (!isset($_SESSION["nominativo"])) {
     header("Location: ../index.php");
@@ -28,7 +35,7 @@ while ($row = $result->fetch_assoc()) {
     $tot_atleti = $row["tot"];
 }
 
-$sqlDirigenti = "SELECT COUNT(*) AS tot FROM `dirigente`";
+$sqlDirigenti = "SELECT COUNT(*) AS tot FROM `squadra`";
 $result = $conn->query($sqlDirigenti);
 
 while ($row = $result->fetch_assoc()) {
@@ -91,18 +98,32 @@ while ($row = $result->fetch_assoc()) {
     $resultDate = date($formato, $timestamp_data);
 
     if ($data == $dataOdierna) {
-        $tabella_agenda .= "<tr style='background-color: #FF5733; color: white; font-style: italic;'>
+        $tabella_agenda .= "
+        
+        <tr style='background-color: #FF5733; color: white; font-style: italic;'>
         <td>" . $i . "</td>
         <td><b>" . $resultDate . "</b></td>
         <td>" . $row["titolo"] . "</td>
         <td> " . $row["autore"] . "</td>
-    </tr>";
+        <td>
+        <button type='button' class='btn p-0' data-bs-toggle='modal' data-bs-target='#exampleModal2'>
+        <img src='../ICON/eye-fill.svg'>
+        </button>
+        </td>
+        </tr>
+
+    ";
     } else {
         $tabella_agenda .= "<tr>
         <td>" . $i . "</td>
         <td>" . $resultDate . "</td>
         <td>" . $row["titolo"] . "</td>
         <td> " . $row["autore"] . "</td>
+        <td>
+        <button type='button' class='btn p-0' data-bs-toggle='modal' data-bs-target='#exampleModal2'>
+        <img src='../ICON/eye-fill.svg'>
+        </button>
+        </td>
         </tr>";
     }
     $i++;
@@ -145,20 +166,20 @@ while ($row = $result->fetch_assoc()) {
         <a href="home.php" class="over">Home</a>
         <a href="player.php" class="over">Atleti</a>
         <a href="coach.php" class="over">Allenatori</a>
-        <a href="player.php" class="over">Dirigenti</a>
-        <a href="Pages/agenda.php" class="over">Agenda</a>
+        <a href="agenda.php" class="over">Agenda</a>
         <a href="certificati.php" class="over">Certificati</a>
         <button class="dropdown-btn">Squadre
             <i class="fa fa-caret-down"></i>
         </button>
         <div class="dropdown-container">
             <?php
-            $sqlTeam = "SELECT nome FROM `squadra`";
+            $sqlTeam = "SELECT nome, id FROM `squadra`";
             $result = $conn->query($sqlTeam);
             echo "<a class='over' href='team.php'>Gestisci squadre</a>";
             while ($row = $result->fetch_assoc()) {
-                $team = $row["nome"];
-                echo "<a class='over' href='generateTeam.php?squadra=$team'>$team</a>";
+                $id = $row["id"];
+                $nome = $row["nome"];
+                echo "<a class='over' href='generateTeam.php?squadra=$id'>$nome</a>";
             }
             $conn = null;
             ?>
@@ -168,7 +189,7 @@ while ($row = $result->fetch_assoc()) {
     <div class="content">
         <nav class="navbar navbar-expand-lg">
             <div class="container-fluid">
-                <a class="navbar-brand font-15" href="#"><?php echo strtoupper(recuperaDatiSocieta())?></a>
+                <a class="navbar-brand font-15" href="#"><?php echo strtoupper(recuperaDatiSocieta()) ?></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -221,9 +242,9 @@ while ($row = $result->fetch_assoc()) {
                         <div class="card-body">
                             <h5 class="card-title"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-people-fill mr-2" viewBox="0 0 16 16">
                                     <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
-                                </svg>TOT. Dirigenti</h5>
+                                </svg>TOT. Squadre</h5>
                             <p class="card-text fs-3"><?php echo $tot_dirigenti ?></p>
-                            <a href="dirigenti.php" class="btn btn-primary" style="background-color: #012E63; border: 0px solid white">Vai alla sezione dirigenti</a>
+                            <a href="team.php" class="btn btn-primary" style="background-color: #012E63; border: 0px solid white">Vai alla sezione squadre</a>
                         </div>
                     </div>
                 </div>
@@ -257,6 +278,7 @@ while ($row = $result->fetch_assoc()) {
                             <th scope="col">Data Scadenza</th>
                             <th scope="col">Impegno</th>
                             <th scope="col">Autore</th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -337,6 +359,24 @@ while ($row = $result->fetch_assoc()) {
         </div>
     </div>
 
+    <!-- Modal 2 -->
+    <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <center><h5 class="modal-title text-center" id="exampleModalLabel">ALERT</h5></center>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <center><img src="../ICON/danger.svg" alt="" width="70" height="70"></center>
+                <h3 class="text-center mt-3">FUNZIONE NON DISPONIBILE AL MOMENTO</h3>
+            </div>
+        </div>
+    </div>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <script src="../JS/jquery.min.js"></script>
+
+
+
     <script>
         var dropdown = document.getElementsByClassName("dropdown-btn");
         var i;
@@ -353,6 +393,7 @@ while ($row = $result->fetch_assoc()) {
             });
         }
     </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
 
 </body>

@@ -50,29 +50,29 @@ while ($row = $result->fetch_assoc()) {
 
 <body onload="nascondiDIV('fatturaDIV')">
 
-    <div class="sidebar">
+<div class="sidebar">
         <center><img src="../ICON/LOGO.png" alt="Bootstrap" width="80" height="80" class="mt-3"></center>
 
-        <a href="home.php" class="">Home</a>
-        <a href="player.php" class="">Atleti</a>
-        <a href="coach.php" class="">Allenatori</a>
-        <a href="dirigenti.php" class="">Dirigenti</a>
-        <a href="Pages/agenda.php" class="">Agenda</a>
-        <a href="#">Organigramma</a>
+        <a href="home.php" class="over">Home</a>
+        <a href="player.php" class="over">Atleti</a>
+        <a href="coach.php" class="over">Allenatori</a>
+        <a href="agenda.php" class="over">Agenda</a>
+        <a href="certificati.php" class="over">Certificati</a>
         <button class="dropdown-btn">Squadre
             <i class="fa fa-caret-down"></i>
         </button>
         <div class="dropdown-container">
             <?php
-            $sqlTeam = "SELECT nome FROM `squadra`";
+            $sqlTeam = "SELECT nome, id FROM `squadra`";
             $result = $conn->query($sqlTeam);
+            echo "<a class='over' href='team.php'>Gestisci squadre</a>";
             while ($row = $result->fetch_assoc()) {
-                $team = $row["nome"];
-                echo "<a href='generateTeam.php?squadra=$team'>$team</a>";
+                $id = $row["id"];
+                $nome = $row["nome"];
+                echo "<a class='over' href='generateTeam.php?squadra=$id'>$nome</a>";
             }
             ?>
         </div>
-        <a href="#">Contabilità</a>
     </div>
 
     <div class="content">
@@ -255,13 +255,17 @@ while ($row = $result->fetch_assoc()) {
                     <div class="row mb-3">
                         <label for="inputEmail3" class="col-sm-2 col-form-label">Sesso:</label>
                         <div class="col-sm-10">
-                            <div class="form-check form-check-inline ml-5 mt-1">
-                                <input class="form-check-input" type="radio" name="sessoMaschio" id="sessoMaschio" value="1" <?php echo $checkMaschio ?> <?php echo $status ?>>
-                                <label class="form-check-label" for="inlineRadio1">Maschio</label>
+                            <div class="form-check-inline  ml-5 mt-1">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="1">
+                                <label class="form-check-label" for="flexRadioDefault1">
+                                    Maschio
+                                </label>
                             </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="sessoFemmina" id="sessoFemmina" value="2" <?php echo $checkFemmina ?> <?php echo $status ?>>
-                                <label class="form-check-label" for="inlineRadio2">Femmina</label>
+                            <div class="form-check-inline">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="2">
+                                <label class="form-check-label" for="flexRadioDefault2">
+                                    Femmina
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -271,10 +275,7 @@ while ($row = $result->fetch_assoc()) {
 
             <div class="div-photo-right div-border">
                 <center>
-                    <p>Carica foto:</p>
-                    <div class="row">
-                        <input type="file" name="fotoAtelta" id="fotoAtleta" class="upload" required />
-                    </div>
+                    <img src="../UPLOADS/UPLOADS_PHOTO/01.png" alt="">
                 </center>
             </div>
             <a name="certificato">
@@ -329,20 +330,18 @@ while ($row = $result->fetch_assoc()) {
                     <div class="row mb-3">
                         <label for="inputEmail3" class="col-sm-2 col-form-label">S.Coach:</label>
                         <div class="col-sm-10">
-                            <div class="form-check form-check-inline ml-5 mt-1">
-                                <input class="form-check-input" type="radio" name="siSmart" id="siSmart" value="1" <?php echo $status ?>>
-                                <label class="form-check-label" for="inlineRadio1">In possesso</label>
+                            <div class="form-check form-switch ml-5 mt-1">
+                                <input class="form-check-input" type="checkbox" role="switch" name="siSmart" id="siSmart" value="1" <?php echo $status ?>>
+                                <label class="form-check-label" for="flexSwitchCheckDefault">In possesso</label>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
+            <center>
+                <button class="btn w-100 btn-success backBlue mb-5 mt-3">INSERISCI</button>
+            </center>
     </div>
-
-    <center>
-        <button class="btn btn-success backBlue mt-5">INSERISCI</button>
-    </center>
 
     </form>
     </div>

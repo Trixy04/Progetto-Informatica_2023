@@ -36,11 +36,9 @@ $dataCreazione = date("Y-m-d");
 $comitato = $_POST["dottore"];
 $idQualifica = $_POST["tipoCert"];
 
-if (isset($_POST["sessoMaschio"])) {
-    $sesso = 1;
-} else {
-    $sesso = 2;
-}
+
+$sesso = $_POST["flexRadioDefault"];
+
 
 if (isset($_POST["siSmart"])) {
     $smartCoach = 1;
@@ -137,7 +135,6 @@ if ($conn->query($sqlGiocatore) == TRUE) {
     echo "Error: " . $sql . "<br>" . $conn->error;
 }
 
-/*
+$_SESSION["coach"] = $codFiscale;
+header("Location: ../PAGES/showCoach.php");
 
-header("Location: ../PAGES/coach.php");
-*/

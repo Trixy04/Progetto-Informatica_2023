@@ -16,10 +16,13 @@ if (isset($_GET["add"]) && $_GET["add"] == 'true') {
     addEvent();
 }
 
-$sqlGiocatori = "SELECT C.numeroCertificato AS numero, C.dataScadenza AS scadenza, C.dottore AS dottore, P.cod_fiscale AS codFiscale, C.id AS id, P.nome, P.cognome FROM giocatore AS G
-JOIN certificato AS C ON G.id_certificato = C.id
-JOIN persona AS P ON P.cod_utente = G.id_persona
-ORDER BY cognome";
+$sqlGiocatori = "SELECT S.id AS id, S.nome AS nome, P1.nome AS nomePrimo, P1.cognome AS cognomePrimo, P2.nome AS nomeSecondo, P2.cognome AS cognomeSecondo, Stag.annoInizio AS inizio, Stag.annoFine AS fine FROM squadra AS S
+JOIN allenatore AS A1 ON A1.id = S.id_I_allenatore
+JOIN allenatore AS A2 ON A2.id = S.id_II_allenatore
+JOIN persona AS P1 ON P1.cod_utente = A1.id_persona
+JOIN persona AS P2 ON P2.cod_utente = A2.id_persona
+JOIN stagioniSportive AS Stag ON Stag.id = S.id_stagioneSportiva
+ORDER BY id";
 
 $result = $conn->query($sqlGiocatori);
 $tabella_giocatori = "";
@@ -30,16 +33,15 @@ while ($row = $result->fetch_assoc()) {
     $formato = 'd/m/Y';
     $resultDateS = date($formato, $timestamp_dataN);
 
-    
+    $id = $row["id"];
 
     $tabella_giocatori .= "<tr valign='middle'>
     <td>" . $row["id"] . "</td>
-    <td> " . $row["numero"] . "</td>
-    <td> " . $resultDateS . "</td>
-    <td> " . $row["codFiscale"] . "</td>
-    <td> " . $row["cognome"] . "</td>
     <td> " . $row["nome"] . "</td>
-    <td><a href='resultResearch.php?cf=$cf#certificato'><button class='btn btn-success'>Show</button></a></td>
+    <td> " . $row["cognomePrimo"] . " " . $row["nomePrimo"] . "</td>
+    <td> " . $row["cognomeSecondo"] . " " . $row["nomeSecondo"] . "</td>
+    <td> " . $row["inizio"] . "/" . $row["fine"] . "</td>
+    <td><a href='generateTeam.php?squadra=$id'><button class='btn btn-success'>Show</button></a></td>
     </tr>";
 }
 
@@ -56,7 +58,7 @@ while ($row = $result->fetch_assoc()) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <link rel="stylesheet" href="../CSS/style.css" type="text/css">
-    <title>CERTIFICATI</title>
+    <title>SQUADRE</title>
 </head>
 
 <body>
@@ -82,7 +84,6 @@ while ($row = $result->fetch_assoc()) {
                 $nome = $row["nome"];
                 echo "<a class='over' href='generateTeam.php?squadra=$id'>$nome</a>";
             }
-            $conn = null;
             ?>
         </div>
     </div>
@@ -115,25 +116,23 @@ while ($row = $result->fetch_assoc()) {
 
         <div class="div-utenti radius-bord border">
             <i>
-                <h5 class="text-center mt-3">Certificati atleti <?php
-                                                        $nome = recuperaDatiSocieta();
-                                                        echo $nome;
-                                                        ?></h5>
+                <h5 class="text-center mt-3">Squadre della <?php
+                                                            $nome = recuperaDatiSocieta();
+                                                            echo $nome;
+                                                            ?></h5>
             </i>
             <center>
-                <form class="d-flex w-50 mt-1" action="../CONFIG/function.php" method="post">
-                    <input class="form-control me-2" type="search" placeholder="Cerca per numero certificato" aria-label="Search" name="CFRicerca">
-                    <button class="btn btn-outline-success" type="submit">Cerca</button>
-                </form>
+                <button type="button" class="btn btn-primary text-white backBlue mt-2 b-none" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Inserisci
+                </button>
                 <table class="table mt-5 w-85">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">N° cert.</th>
-                            <th scope="col">Scadenza</th>
-                            <th scope="col">Cod. Fiscale</th>
-                            <th scope="col">Cognome</th>
-                            <th scope="col">Nome</th>
+                            <th scope="col">Categoria</th>
+                            <th scope="col">I° All.</th>
+                            <th scope="col">II° All.</th>
+                            <th scope="col">Stagione Sportiva</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
@@ -155,8 +154,32 @@ while ($row = $result->fetch_assoc()) {
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                <a href="insertCoach.php" class="btn btn-primary" style="background-color: #012E63; border: 0px solid white">Inserendo nuova persona</a>
-                <a href="esistenteCoach.php" class="btn btn-primary" style="background-color: #012E63; border: 0px solid white">Utilizzando persona già inserita</a>
+                    <form action="">
+                        <div class="row mb-3">
+                            <label for="" class="col-sm-2 col-form-label">Nome:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control w-35 ml-5" id="cognome" name="cognome" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="" class="col-sm-2 col-form-label">Nome:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control w-35 ml-5" id="cognome" name="cognome" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="" class="col-sm-2 col-form-label">Nome:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control w-35 ml-5" id="cognome" name="cognome" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="" class="col-sm-2 col-form-label">Nome:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control w-35 ml-5" id="cognome" name="cognome" required>
+                            </div>
+                        </div>
+                    </form>
 
                 </div>
             </div>

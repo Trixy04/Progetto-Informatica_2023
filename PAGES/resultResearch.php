@@ -28,7 +28,6 @@ WHERE cod_Fiscale = '$codiceFiscale'";
 $result = $conn->query($sqlRicercaCodFiscale);
 if ($result->num_rows == 0) {
     $dispalyRicerca = "none";
-
 } else {
     $dispalyRicerca = "";
     $writeDanger = "none";
@@ -141,29 +140,29 @@ while ($row = $result->fetch_assoc()) {
 
 <body>
 
-    <div class="sidebar">
+<div class="sidebar">
         <center><img src="../ICON/LOGO.png" alt="Bootstrap" width="80" height="80" class="mt-3"></center>
 
-        <a href="home.php" class="">Home</a>
-        <a href="player.php" class="">Atleti</a>
-        <a href="coach.php" class="">Allenatori</a>
-        <a href="dirigenti.php" class="">Dirigenti</a>
-        <a href="Pages/agenda.php" class="">Agenda</a>
-        <a href="#">Organigramma</a>
+        <a href="home.php" class="over">Home</a>
+        <a href="player.php" class="over">Atleti</a>
+        <a href="coach.php" class="over">Allenatori</a>
+        <a href="agenda.php" class="over">Agenda</a>
+        <a href="certificati.php" class="over">Certificati</a>
         <button class="dropdown-btn">Squadre
             <i class="fa fa-caret-down"></i>
         </button>
         <div class="dropdown-container">
             <?php
-            $sqlTeam = "SELECT nome FROM `squadra`";
+            $sqlTeam = "SELECT nome, id FROM `squadra`";
             $result = $conn->query($sqlTeam);
+            echo "<a class='over' href='team.php'>Gestisci squadre</a>";
             while ($row = $result->fetch_assoc()) {
-                $team = $row["nome"];
-                echo "<a href='generateTeam.php?squadra=$team'>$team</a>";
+                $id = $row["id"];
+                $nome = $row["nome"];
+                echo "<a class='over' href='generateTeam.php?squadra=$id'>$nome</a>";
             }
             ?>
         </div>
-        <a href="#">Contabilità</a>
     </div>
 
     <div class="content">
@@ -371,6 +370,12 @@ while ($row = $result->fetch_assoc()) {
                     <button type="button" class="btn btn-primary mt-2" style="background-color: #012E63; border: 0px solid black;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-upc-scan" viewBox="0 0 16 16">
                             <path d="M1.5 1a.5.5 0 0 0-.5.5v3a.5.5 0 0 1-1 0v-3A1.5 1.5 0 0 1 1.5 0h3a.5.5 0 0 1 0 1h-3zM11 .5a.5.5 0 0 1 .5-.5h3A1.5 1.5 0 0 1 16 1.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 1-.5-.5zM.5 11a.5.5 0 0 1 .5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 1 0 1h-3A1.5 1.5 0 0 1 0 14.5v-3a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v3a1.5 1.5 0 0 1-1.5 1.5h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 1 .5-.5zM3 4.5a.5.5 0 0 1 1 0v7a.5.5 0 0 1-1 0v-7zm2 0a.5.5 0 0 1 1 0v7a.5.5 0 0 1-1 0v-7zm2 0a.5.5 0 0 1 1 0v7a.5.5 0 0 1-1 0v-7zm2 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-7zm3 0a.5.5 0 0 1 1 0v7a.5.5 0 0 1-1 0v-7z" />
+                        </svg>
+                    </button>
+                    <button type="button" class="btn btn-primary mt-2" style="background-color: #012E63; border: 0px solid black;" onclick="window.print();">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer" viewBox="0 0 16 16">
+                            <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
+                            <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z" />
                         </svg>
                     </button>
                     <p class="mt-3">Utente creato il: <?php echo $dataCreazione ?></p>

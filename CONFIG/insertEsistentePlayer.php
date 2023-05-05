@@ -68,10 +68,10 @@ if ($conn->query($sqlGioca) == TRUE) {
     echo "Error: " . $sql . "<br>" . $conn->error;
 }
 
-if (isset($_POST["datiFattSINO"])) {
+if ($_POST["datiFattSINO"] == 1) {
 
-    $sqlDatiPersona = "SELECT cod_fiscale, cognome, nome, id_titolo, id_residenza, id_contatti
-    WHERE cod_fiscale = '$codFiscale'";
+    $sqlDatiPersona = "SELECT cod_fiscale, cognome, nome, id_titolo, id_residenza, id_contatti FROM persona
+    WHERE cod_utente = '$idPers'";
     $result = $conn->query($sqlDatiPersona);
     while ($row = $result->fetch_assoc()) {
         $codFiscale = $row["cod_fiscale"];
@@ -84,7 +84,7 @@ if (isset($_POST["datiFattSINO"])) {
 
     //INSERIMENTO DATI FATTURAZIONE
     $sqlFatturazione = "INSERT INTO dati_Fatturazione(cod_fiscale, cognome, nome, titolo, id_residenza, id_contatti)
-VALUES ('$cognome', '$cognome', '$nome', $titolo, $idResidenza, $idContatto)";
+VALUES ('$codFiscale', '$cognome', '$nome', $titolo, $idResidenza, $idContatto)";
     if ($conn->query($sqlFatturazione) == TRUE) {
         echo "New record created successfully";
     } else {
@@ -105,8 +105,10 @@ VALUES ('$cognome', '$cognome', '$nome', $titolo, $idResidenza, $idContatto)";
         echo "Error: " . $sql . "<br>" . $conn->error;
     }
 
+    
     $_SESSION["codFiscale"] = $codFiscale;
     header("Location: ../PAGES/resultResearch.php");
+    
 
 } else {
 
@@ -174,8 +176,10 @@ VALUES ('$codFiscaleFatt', '$cognomeFatt', '$nomeFatt', $titoloFatt, $idResidenz
         echo "Error: " . $sql . "<br>" . $conn->error;
     }
 
+    
     $_SESSION["codFiscale"] = $codFiscale;
     header("Location: ../PAGES/resultResearch.php");
+    
 }
 
-header("Location: ../PAGES/player.php");
+?>

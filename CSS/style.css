@@ -225,6 +225,13 @@
   margin-top: 3vh;
 }
 
+.div-calendar-page{
+  margin-left: 14px;
+  margin-right: 14px;
+  margin-top: 3vh;
+  height: 80;
+}
+
 .div-squadre {
   width: 27%;
   float: right;

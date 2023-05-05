@@ -21,7 +21,7 @@ function addEvent()
     $sql = "INSERT INTO agenda (dataIns, dataScad, textMess, autore, titolo)
     VALUES ('$dataCreazione', '$dataScadenza', '$descrizione', '$autore', '$titolo')";
     if (mysqli_query($conn, $sql)) {
-        // Refer to the PHP quickstart on how to setup the environment:
+        /* Refer to the PHP quickstart on how to setup the environment:
 
         $event = new Google_Service_Calendar_Event(array(
             'summary' => 'Google I/O 2015',
@@ -54,7 +54,7 @@ function addEvent()
         $calendarId = 'primary';
         $event = $service->events->insert($calendarId, $event);
         printf('Event created: %s\n', $event->htmlLink);
-
+*/
         header("Location: home.php?add=false");
     } else {
         echo "Error: " . $sql . "<br>" . mysqli_error($conn);

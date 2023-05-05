@@ -33,6 +33,8 @@ while ($row = $result->fetch_assoc()) {
 
     if($row["smart"] == 1){
         $smartCoach = "checked";
+    }else{
+        $smartCoach = "";
     }
 
     $tabella_giocatori .= "<tr valign='middle'>
@@ -42,7 +44,7 @@ while ($row = $result->fetch_assoc()) {
     <td> " . $row["nome"] . "</td>
     <td> " . $resultDateN . "</td>
     <td> " . $row["qualificaFipav"] . "</td>
-    <td style='text-align:center'> <input class='form-check-input' type='checkbox' value='' id='flexCheckDefault' echo $smartCoach disabled></td>
+    <td style='text-align:center'> <input class='form-check-input' type='checkbox' value='' id='flexCheckDefault' $smartCoach  disabled></td>
     <td><a href='showCoach.php?cf=$cf'><button class='btn btn-success'>Show</button></a></td>
     </tr>";
 }
@@ -68,27 +70,27 @@ while ($row = $result->fetch_assoc()) {
 <div class="sidebar">
         <center><img src="../ICON/LOGO.png" alt="Bootstrap" width="80" height="80" class="mt-3"></center>
 
-        <a href="home.php" class="">Home</a>
-        <a href="player.php" class="">Atleti</a>
-        <a href="coach.php" class="">Allenatori</a>
-        <a href="dirigenti.php" class="">Dirigenti</a>
-        <a href="Pages/agenda.php" class="">Agenda</a>
-        <a href="#">Organigramma</a>
+        <a href="home.php" class="over">Home</a>
+        <a href="player.php" class="over">Atleti</a>
+        <a href="coach.php" class="over">Allenatori</a>
+        <a href="agenda.php" class="over">Agenda</a>
+        <a href="certificati.php" class="over">Certificati</a>
         <button class="dropdown-btn">Squadre
             <i class="fa fa-caret-down"></i>
         </button>
         <div class="dropdown-container">
             <?php
-            $sqlTeam = "SELECT nome FROM `squadra`";
+            $sqlTeam = "SELECT nome, id FROM `squadra`";
             $result = $conn->query($sqlTeam);
+            echo "<a class='over' href='team.php'>Gestisci squadre</a>";
             while ($row = $result->fetch_assoc()) {
-                $team = $row["nome"];
-                echo "<a href='generateTeam.php?squadra=$team'>$team</a>";
+                $id = $row["id"];
+                $nome = $row["nome"];
+                echo "<a class='over' href='generateTeam.php?squadra=$id'>$nome</a>";
             }
             $conn = null;
             ?>
         </div>
-        <a href="#">Contabilità</a>
     </div>
     <div class="content">
         <nav class="navbar navbar-expand-lg">
@@ -125,8 +127,8 @@ while ($row = $result->fetch_assoc()) {
                                                         ?></h5>
             </i>
             <center>
-                <form class="d-flex w-50" action="resultResearch.php" method="post">
-                    <input class="form-control me-2" type="search" placeholder="Cerca per codice fiscale" aria-label="Search" name="CFRicerca">
+                <form class="d-flex w-50" action="showCoach.php" method="get">
+                    <input class="form-control me-2" type="search" placeholder="Cerca per codice fiscale" aria-label="Search" name="cf">
                     <button class="btn btn-outline-success" type="submit">Cerca</button>
                 </form>
                 <button type="button" class="btn btn-primary text-white backBlue mt-2 b-none" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -164,7 +166,7 @@ while ($row = $result->fetch_assoc()) {
                 </div>
                 <div class="modal-body">
                 <a href="insertCoach.php" class="btn btn-primary" style="background-color: #012E63; border: 0px solid white">Inserendo nuova persona</a>
-                <a href="inserimentoEsistente.php" class="btn btn-primary" style="background-color: #012E63; border: 0px solid white">Utilizzando persona già inserita</a>
+                <a href="esistenteCoach.php" class="btn btn-primary" style="background-color: #012E63; border: 0px solid white">Utilizzando persona già inserita</a>
 
                 </div>
             </div>

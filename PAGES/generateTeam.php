@@ -52,11 +52,14 @@ JOIN giocatore AS GR ON G.id_giocatore = GR.id
 JOIN persona AS P ON GR.id_persona = P.cod_utente
 JOIN contatto AS C ON C.id = P.id_contatti
 JOIN squadra AS S ON G.id_squadra = S.id
-WHERE S.nome = '$squadra'";
+WHERE S.id = '$squadra'";
 
 $result = $conn->query($sqlGiocatori);
 $tabella_giocatori = "";
 while ($row = $result->fetch_assoc()) {
+
+    $nomeSquadea = $row["squadra"];
+
     $tabella_giocatori .= "<tr>
     <td>" . $row["id"] . "</td>
     <td> " . $row["codFiscale"] . "</td>
@@ -139,29 +142,27 @@ function addEvent()
 <div class="sidebar">
         <center><img src="../ICON/LOGO.png" alt="Bootstrap" width="80" height="80" class="mt-3"></center>
 
-        <a href="home.php" class="">Home</a>
-        <a href="player.php" class="">Atleti</a>
-        <a href="coach.php" class="">Allenatori</a>
-        <a href="dirigenti.php" class="">Dirigenti</a>
-        <a href="Pages/agenda.php" class="">Agenda</a>
-        <a href="#">Organigramma</a>
+        <a href="home.php" class="over">Home</a>
+        <a href="player.php" class="over">Atleti</a>
+        <a href="coach.php" class="over">Allenatori</a>
+        <a href="agenda.php" class="over">Agenda</a>
+        <a href="certificati.php" class="over">Certificati</a>
         <button class="dropdown-btn">Squadre
             <i class="fa fa-caret-down"></i>
         </button>
         <div class="dropdown-container">
             <?php
-            $sqlTeam = "SELECT nome FROM `squadra`";
+            $sqlTeam = "SELECT nome, id FROM `squadra`";
             $result = $conn->query($sqlTeam);
+            echo "<a class='over' href='team.php'>Gestisci squadre</a>";
             while ($row = $result->fetch_assoc()) {
-                $team = $row["nome"];
-                echo "<a href='generateTeam.php?squadra=$team'>$team</a>";
+                $id = $row["id"];
+                $nome = $row["nome"];
+                echo "<a class='over' href='generateTeam.php?squadra=$id'>$nome</a>";
             }
-            $conn = null;
             ?>
         </div>
-        <a href="#">Contabilità</a>
     </div>
-
     <div class="content">
         <nav class="navbar navbar-expand-lg">
             <div class="container-fluid">
@@ -188,14 +189,13 @@ function addEvent()
                 </div>
             </div>
         </nav>
-        <button type="button" class="btn btn-primary ml-1" style="background-color: #012E63; border: 0px;">Inserisci</button>
 
         <div class="div-utentiGenerate radius-bord border">
-            <i>
-                <h5 class="mt-3 ml-5 w-50 float-left">Giocatori <?php echo $squadra?></h5>
-                
-            </i>
+            
             <center>
+
+              <h5 class="mt-3 ml-5 w-50">Giocatori <?php echo $nomeSquadea?></h5>
+              
                 <table class="table table-striped mt-3 w-85">
                     <thead>
                         <tr>
@@ -213,26 +213,6 @@ function addEvent()
                 </table>
             </center>
         </div>
-
-        <div class="div-squadre radius-bord border ">
-            <i>
-                <h5 class="text-center mt-3">Squadre</h5>
-            </i>
-            <center>
-                <table class="table table-striped mt-3 w-85">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Squadra</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php echo $tabella_squadra; ?>
-                    </tbody>
-                </table>
-            </center>
-        </div>
-
     </div>
 
     <!-- Modal -->

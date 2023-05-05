@@ -64,27 +64,26 @@ while ($row = $result->fetch_assoc()) {
 <div class="sidebar">
         <center><img src="../ICON/LOGO.png" alt="Bootstrap" width="80" height="80" class="mt-3"></center>
 
-        <a href="home.php" class="">Home</a>
-        <a href="player.php" class="">Atleti</a>
-        <a href="coach.php" class="">Allenatori</a>
-        <a href="dirigenti.php" class="">Dirigenti</a>
-        <a href="Pages/agenda.php" class="">Agenda</a>
-        <a href="#">Organigramma</a>
+        <a href="home.php" class="over">Home</a>
+        <a href="player.php" class="over">Atleti</a>
+        <a href="coach.php" class="over">Allenatori</a>
+        <a href="agenda.php" class="over">Agenda</a>
+        <a href="certificati.php" class="over">Certificati</a>
         <button class="dropdown-btn">Squadre
             <i class="fa fa-caret-down"></i>
         </button>
         <div class="dropdown-container">
             <?php
-            $sqlTeam = "SELECT nome FROM `squadra`";
+            $sqlTeam = "SELECT nome, id FROM `squadra`";
             $result = $conn->query($sqlTeam);
+            echo "<a class='over' href='team.php'>Gestisci squadre</a>";
             while ($row = $result->fetch_assoc()) {
-                $team = $row["nome"];
-                echo "<a href='generateTeam.php?squadra=$team'>$team</a>";
+                $id = $row["id"];
+                $nome = $row["nome"];
+                echo "<a class='over' href='generateTeam.php?squadra=$id'>$nome</a>";
             }
-            $conn = null;
             ?>
         </div>
-        <a href="#">Contabilità</a>
     </div>
     <div class="content">
         <nav class="navbar navbar-expand-lg">
