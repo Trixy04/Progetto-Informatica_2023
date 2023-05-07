@@ -162,23 +162,55 @@ while ($row = $result->fetch_assoc()) {
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label for="" class="col-sm-2 col-form-label">Nome:</label>
+                            <label for="" class="col-sm-2 col-form-label">I° All.</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control w-35 ml-5" id="cognome" name="cognome" required>
+                            <select class="form-select w-35 ml-5" aria-label="Default select example" name="idPersona" required>
+                                <?php
+                                $sqlCategorieCert = "SELECT P.* FROM persona AS P
+                                WHERE P.cod_utente IN (SELECT id_persona FROM allenatore)";
+                                $result = $conn->query($sqlCategorieCert);
+                                while ($row = $result->fetch_assoc()) {
+                                    $id = $row["cod_utente"];
+                                    echo "<option value=$id> " . $id . " - " . $row["cognome"] ." " . $row["nome"] . "</option>";
+                                }
+                                ?>
+                            </select>
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label for="" class="col-sm-2 col-form-label">Nome:</label>
+                            <label for="" class="col-sm-2 col-form-label">II° All.</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control w-35 ml-5" id="cognome" name="cognome" required>
+                            <select class="form-select w-35 ml-5" aria-label="Default select example" name="idPersona" required>
+                                <?php
+                                $sqlCategorieCert = "SELECT P.* FROM persona AS P
+                                WHERE P.cod_utente IN (SELECT id_persona FROM allenatore)";
+                                $result = $conn->query($sqlCategorieCert);
+                                while ($row = $result->fetch_assoc()) {
+                                    $id = $row["cod_utente"];
+                                    echo "<option value=$id> " . $id . " - " . $row["cognome"] ." " . $row["nome"] . "</option>";
+                                }
+                                ?>
+                            </select>
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label for="" class="col-sm-2 col-form-label">Nome:</label>
+                            <label for="" class="col-sm-2 col-form-label">Stagione:</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control w-35 ml-5" id="cognome" name="cognome" required>
+                            <select class="form-select w-35 ml-5" aria-label="Default select example" name="idPersona" required>
+                                <?php
+                                $sqlSport = "SELECT S.* FROM stagioniSportive AS S";
+                                $result = $conn->query($sqlSport);
+                                while ($row = $result->fetch_assoc()) {
+                                    $id = $row["id"];
+                                    echo "<option value=$id> " . $row["annoInizio"] ."/" . $row["annoFine"] . "</option>";
+                                }
+                                ?>
+                            </select>
                             </div>
                         </div>
+                        <center>
+                        <button type="button" class="btn backBlue btn-light text-light" >Inserisci</button>
+                        </center>
                     </form>
 
                 </div>
