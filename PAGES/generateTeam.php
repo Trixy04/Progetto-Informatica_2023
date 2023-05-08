@@ -57,16 +57,15 @@ WHERE S.id = '$squadra'";
 $result = $conn->query($sqlGiocatori);
 $tabella_giocatori = "";
 while ($row = $result->fetch_assoc()) {
-
-    $nomeSquadea = $row["squadra"];
-
-    $tabella_giocatori .= "<tr>
+    $cf = $row["codFiscale"];
+    $tabella_giocatori .= "<tr valign='middle'>
     <td>" . $row["id"] . "</td>
     <td> " . $row["codFiscale"] . "</td>
     <td> " . $row["cognome"] . "</td>
     <td> " . $row["nome"] . "</td>
     <td> " . $row["nascita"] . "</td>
     <td> " . $row["numero"] . "</td>
+    <td><a href='resultResearch.php?cf=$cf'><button class='btn btn-success'>Show</button></a></td>
     </tr>";
 }
 
@@ -160,6 +159,7 @@ function addEvent()
                 $nome = $row["nome"];
                 echo "<a class='over' href='generateTeam.php?squadra=$id'>$nome</a>";
             }
+            
             ?>
         </div>
     </div>
@@ -194,7 +194,15 @@ function addEvent()
             
             <center>
 
-              <h5 class="mt-3 ml-5 w-50">Giocatori <?php echo $nomeSquadea?></h5>
+              <h5 class="mt-3 ml-5 w-50">Giocatori <?php 
+              
+              $sqlNome = "SELECT nome FROM squadra WHERE id = $squadra";
+              $result = $conn->query($sqlNome);
+              while ($row = $result->fetch_assoc()) {
+                echo $row["nome"];
+              }
+              ?>
+              </h5>
               
                 <table class="table table-striped mt-3 w-85">
                     <thead>
@@ -205,6 +213,7 @@ function addEvent()
                             <th scope="col">Nome</th>
                             <th scope="col">Data nascita</th>
                             <th scope="col">N° maglia</th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>

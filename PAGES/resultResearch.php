@@ -38,7 +38,7 @@ $qualifica = 1;
 
 $sqlGiocatore = "SELECT 
 
-P.provinciaNascita AS pNascita, P.luogo_nascita AS luogo, P.cod_utente AS codUtente, P.data_nascita AS dataNascita, P.cod_utente AS id, P.cod_fiscale AS codFiscale, P.nome AS nome, P.cognome AS cognome, P.dataCreazione AS dataCreazionePersona,
+P.provinciaNascita AS pNascita, P.luogo_nascita AS luogo, P.cod_utente AS codUtente, P.data_nascita AS dataNascita, P.cod_utente AS id, P.cod_fiscale AS codFiscale, P.nome AS nomePersona, P.cognome AS cognome, P.dataCreazione AS dataCreazionePersona,
 SS.sesso AS sesso, 
 T.titolo AS titolo, 
 R.citta AS citta, R.cap AS cap, R.indirizzo AS indirizzo, R.civico AS civico, R.provincia AS rProvincia, R.id_TipoVia AS tipoVia,
@@ -84,7 +84,7 @@ while ($row = $result->fetch_assoc()) {
     $cap = $row["cap"];
     $citta = $row["citta"];
     $titolo = $row["titolo"];
-    $nome = $row["nome"];
+    $nome = $row["nomePersona"];
     $provinciaNascita = $row["pNascita"];
     $provinciaResidenza = $row["rProvincia"];
     $numDocumento = $row["nDoc"];
@@ -158,7 +158,7 @@ while ($row = $result->fetch_assoc()) {
             echo "<a class='over' href='team.php'>Gestisci squadre</a>";
             while ($row = $result->fetch_assoc()) {
                 $id = $row["id"];
-                $nome = $row["nome"];
+                $nomeSq = $row["nome"];
                 echo "<a class='over' href='generateTeam.php?squadra=$id'>$nome</a>";
             }
             ?>
@@ -311,7 +311,7 @@ while ($row = $result->fetch_assoc()) {
                                 <label class="form-check-label" for="inlineRadio1">Maschio</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2" <?php echo $checkFemmina ?> <?php echo $status ?>>
+                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2"  <?php echo $status ?>>
                                 <label class="form-check-label" for="inlineRadio2">Femmina</label>
                             </div>
                         </div>
@@ -359,7 +359,8 @@ while ($row = $result->fetch_assoc()) {
             <div class="div-photo-right">
                 <center>
                     <img src="../UPLOADS/UPLOADS_PHOTO/01.png" alt="" class="w-100">
-                    <button type="button" class="btn btn-primary mt-2" style="background-color: #012E63; border: 0px solid black;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-qr-code-scan" viewBox="0 0 16 16">
+                    
+                    <button type="button" class="btn btn-primary mt-2" style="background-color: #012E63; border: 0px solid black;" data-bs-toggle="modal" data-bs-target="#exampleModal" ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-qr-code-scan" viewBox="0 0 16 16">
                             <path d="M0 .5A.5.5 0 0 1 .5 0h3a.5.5 0 0 1 0 1H1v2.5a.5.5 0 0 1-1 0v-3Zm12 0a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0V1h-2.5a.5.5 0 0 1-.5-.5ZM.5 12a.5.5 0 0 1 .5.5V15h2.5a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5v-3a.5.5 0 0 1 .5-.5Zm15 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1 0-1H15v-2.5a.5.5 0 0 1 .5-.5ZM4 4h1v1H4V4Z" />
                             <path d="M7 2H2v5h5V2ZM3 3h3v3H3V3Zm2 8H4v1h1v-1Z" />
                             <path d="M7 9H2v5h5V9Zm-4 1h3v3H3v-3Zm8-6h1v1h-1V4Z" />
@@ -367,6 +368,7 @@ while ($row = $result->fetch_assoc()) {
                             <path d="M12 9h2V8h-2v1Z" />
                         </svg>
                     </button>
+                    
                     <button type="button" class="btn btn-primary mt-2" style="background-color: #012E63; border: 0px solid black;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-upc-scan" viewBox="0 0 16 16">
                             <path d="M1.5 1a.5.5 0 0 0-.5.5v3a.5.5 0 0 1-1 0v-3A1.5 1.5 0 0 1 1.5 0h3a.5.5 0 0 1 0 1h-3zM11 .5a.5.5 0 0 1 .5-.5h3A1.5 1.5 0 0 1 16 1.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 1-.5-.5zM.5 11a.5.5 0 0 1 .5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 1 0 1h-3A1.5 1.5 0 0 1 0 14.5v-3a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v3a1.5 1.5 0 0 1-1.5 1.5h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 1 .5-.5zM3 4.5a.5.5 0 0 1 1 0v7a.5.5 0 0 1-1 0v-7zm2 0a.5.5 0 0 1 1 0v7a.5.5 0 0 1-1 0v-7zm2 0a.5.5 0 0 1 1 0v7a.5.5 0 0 1-1 0v-7zm2 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-7zm3 0a.5.5 0 0 1 1 0v7a.5.5 0 0 1-1 0v-7z" />
@@ -599,23 +601,19 @@ while ($row = $result->fetch_assoc()) {
 
 
 
-    <div class="modal" tabindex="-1" id="checkModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Modal title</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Modal body text goes here.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div>
-            </div>
-        </div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">QR CODE <?php echo $cognome . " " . $nome ?></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <center><iframe class="" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=<?php echo $codiceFiscale?>" style="margin-left: 7%; border:0px #ffffff none;" name="myiFrame" scrolling="no" frameborder="1" marginheight="0px" marginwidth="0px" height="200px" width="200px" allowfullscreen></iframe></center>
+      </div>
     </div>
+  </div>
+</div>
 
     <script>
         var dropdown = document.getElementsByClassName("dropdown-btn");

@@ -14,14 +14,14 @@ if (isset($_GET["name"])) {
 
 $status = "";
 
-$codiceFiscale = $_GET["cf"];
+
 $qualifica = 1;
 
 $sqlCategorie = "SELECT * FROM categorie";
 $result = $conn->query($sqlCategorie);
 while ($row = $result->fetch_assoc()) {
     $idCat = $row["id"];
-    $option = "<option value=$id> " . $row["categoria"] . "</option>";
+    $option = "<option value=$idCat> " . $row["categoria"] . "</option>";
 }
 
 
@@ -29,7 +29,7 @@ $sqlCategorie = "SELECT * FROM categorie";
 $result = $conn->query($sqlCategorie);
 while ($row = $result->fetch_assoc()) {
     $idCat = $row["id"];
-    $option = "<option value=$id> " . $row["categoria"] . "</option>";
+    $option = "<option value=$idCat> " . $row["categoria"] . "</option>";
 }
 
 ?>

@@ -281,7 +281,7 @@ while ($row = $result->fetch_assoc()) {
                                 <label class="form-check-label" for="inlineRadio1">Maschio</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2" <?php echo $checkFemmina ?> <?php echo $status ?>>
+                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2" <?php echo $status ?>>
                                 <label class="form-check-label" for="inlineRadio2">Femmina</label>
                             </div>
                         </div>

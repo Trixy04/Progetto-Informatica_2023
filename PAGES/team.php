@@ -27,11 +27,14 @@ ORDER BY id";
 $result = $conn->query($sqlGiocatori);
 $tabella_giocatori = "";
 while ($row = $result->fetch_assoc()) {
+    /*
     $cf = $row["codFiscale"];
-    $dataS = $row["scadenza"];
-    $timestamp_dataN = strtotime($dataS);
-    $formato = 'd/m/Y';
-    $resultDateS = date($formato, $timestamp_dataN);
+    */
+    //$dataS = $row["scadenza"];
+    
+    //$timestamp_dataN = strtotime($dataS);
+    //$formato = 'd/m/Y';
+    //$resultDateS = date($formato, $timestamp_dataN);
 
     $id = $row["id"];
 

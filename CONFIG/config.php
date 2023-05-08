@@ -1,6 +1,6 @@
 <?php
 $servername = "localhost";
-$username = "mamp";
+$username = "root";
 $password = "";
 $db = "Admin_Panel";
 
